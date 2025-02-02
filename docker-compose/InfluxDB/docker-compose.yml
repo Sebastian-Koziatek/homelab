@@ -1,0 +1,20 @@
+services:
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    volumes:
+      - InfluxDB_data:/var/lib/influxdb2
+      - InfluxDB_data:/etc/influxdb2
+    ports:
+      - "8086:8086"
+    restart: unless-stopped
+    networks:
+      - influxdb-network
+
+networks:
+  influxdb-network:
+    driver: bridge
+
+volumes:
+  InfluxDB_data:
+    external: true

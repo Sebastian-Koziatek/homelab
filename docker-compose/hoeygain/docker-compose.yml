@@ -1,0 +1,18 @@
+services:
+  honeygain:
+    image: honeygain/honeygain
+    container_name: honeygain
+    restart: unless-stopped
+    volumes:
+      - HoneyGain:/app/data
+    command: -tou-accept -email <email> -pass <password> -device Docker
+    networks:
+      - honeygain-network
+
+volumes:
+  HoneyGain:
+    external: true
+
+networks:
+  honeygain-network:
+    driver: bridge

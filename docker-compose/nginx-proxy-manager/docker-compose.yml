@@ -1,0 +1,31 @@
+services:
+  nginx-proxy:
+    container_name: nginx-proxy
+    image: 'jc21/nginx-proxy-manager:latest'
+    ports:
+      - "80:80"
+      - "443:443" 
+      - "81:81"  
+    volumes:
+      - nginx_proxy_manager_data:/data
+      - nginx_proxy_manager_data:/etc/letsencrypt
+      - nginx_proxy_manager_data:/app/config
+    restart: unless-stopped
+    depends_on:
+      - db_nginx
+
+  db_nginx:
+    image: 'mariadb:10.5'
+    container_name: nginx-proxy_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${NGINX_DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${NGINX_DB_MYSQL_DATABASE}
+      MYSQL_USER: ${NGINX_DB_MYSQL_USER}
+      MYSQL_PASSWORD: ${NGINX_DB_MYSQL_PASSWORD}
+    volumes:
+      - nginx_proxy_manager_data:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  nginx_proxy_manager_data:
+    external: true

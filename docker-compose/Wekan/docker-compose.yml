@@ -1,0 +1,30 @@
+services:
+  wekandb:
+    image: mongo:4.4
+    container_name: wekan-mongo
+    restart: unless-stopped
+    volumes:
+      - WeKan_db:/data/db
+      - WeKan_db:/data/configdb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: wekan
+      MONGO_INITDB_ROOT_PASSWORD: wekanpassword
+
+  wekan:
+    image: quay.io/wekan/wekan
+    container_name: wekan-app
+    restart: unless-stopped
+    depends_on:
+      - wekandb
+    environment:
+      MONGO_URL: mongodb://wekan:wekanpassword@wekandb:27017/wekan?authSource=admin
+      ROOT_URL: http://localhost
+      PORT: 8880
+    ports:
+      - "8880:8880"
+    volumes:
+      - WeKan_db:/data
+
+volumes:
+  WeKan_db:
+    external: true
